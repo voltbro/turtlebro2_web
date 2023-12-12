@@ -127,20 +127,20 @@ $(document).ready(function(){
         teleop.scale = (slider.value.newValue / 100.0)
     });
 
-    var tele_listener = new ROSLIB.Topic({
-      ros : ros,
-      name : '/web_tele',
-      messageType : 'turtlebro_web/WebTelemetry'
-    });
+    // var tele_listener = new ROSLIB.Topic({
+    //   ros : ros,
+    //   name : '/web_tele',
+    //   messageType : 'turtlebro_web/WebTelemetry'
+    // });
     
 
-    tele_listener.subscribe(function(message) {
-      // console.log('Received message on ' + tele_listener.name + ': ' + message.odom_x);
-      $('#speed_x').text(message.odom_x.toFixed(2));
-      $('#speed_y').text(message.odom_y.toFixed(2));
-      $('#imu_yaw').text(message.imu_yaw);
-      $('#bat_voltage').text(message.bat_voltage.toFixed(2));
-    });
+    // tele_listener.subscribe(function(message) {
+    //   // console.log('Received message on ' + tele_listener.name + ': ' + message.odom_x);
+    //   $('#speed_x').text(message.odom_x.toFixed(2));
+    //   $('#speed_y').text(message.odom_y.toFixed(2));
+    //   $('#imu_yaw').text(message.imu_yaw);
+    //   $('#bat_voltage').text(message.bat_voltage.toFixed(2));
+    // });
 
     var restOdomClient = new ROSLIB.Service({
        ros : ros,

@@ -41,7 +41,7 @@ KEYBOARDTELEOP.Teleop = function(options) {
   var cmdVel = new ROSLIB.Topic({
     ros : ros,
     name : topic,
-    messageType : 'geometry_msgs/Twist'
+    messageType : 'geometry_msgs/msg/Twist'
   });
 
   // sets up a key listener on the page used for keyboard teleoperation

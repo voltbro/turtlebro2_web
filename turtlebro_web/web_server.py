@@ -24,8 +24,9 @@ def get_video_topics(node: Node):
 
 @app.route("/")
 def serve_index():
+  ip_address = request.host.split(':')[0]
   return render_template('index.html', 
-                        ros_host = "192.168.0.148",
+                        ros_host = ip_address,
                         video_topics = get_video_topics(ros_web_node))
 #   return "Hello World1!"
 
