@@ -1,5 +1,5 @@
 import rclpy
-import os
+import os, signal
 from rclpy.node import Node
 from flask import Flask, send_from_directory, send_file, request, jsonify, render_template
 
@@ -10,6 +10,17 @@ ros_web_node = Node("ros_web_node")
 www_path = "../resource/web"
 app = Flask(__name__, static_folder=www_path + '/static', template_folder=www_path)
 
+def shutdown_server():
+    func = request.environ.get('werkzeug.server.shutdown')
+    if func is None:
+        raise RuntimeError('Not running with the Werkzeug Server')
+    func()
+
+def signal_handler(sig, frame):
+    print('Received signal %s' % sig)
+    shutdown_server()
+
+signal.signal(signal.SIGTERM, signal_handler)
 
 def get_video_topics(node: Node):
     
@@ -30,8 +41,13 @@ def serve_index():
                         video_topics = get_video_topics(ros_web_node))
 #   return "Hello World1!"
 
+@app.route('/shutdown', methods=['POST'])
+def shutdown():
+    shutdown_server()
+    return 'Server shutting down...'
+
 def main():
-  app.run(host="0.0.0.0", port=8080, threaded=True)
+  app.run(host="0.0.0.0", port=8080, threaded=True, debug=False)
 
 if __name__ == "__main__":
   main()
