@@ -1,11 +1,10 @@
 import rclpy
-import os, signal
+import os, signal, time
 from rclpy.node import Node
 from flask import Flask, send_from_directory, send_file, request, jsonify, render_template
 
 ROS_DOMAIN_ID :int = int(os.environ.get('ROS_DOMAIN_ID',0))
-rclpy.init(domain_id=ROS_DOMAIN_ID)
-ros_web_node = Node("ros_web_node")
+rclpy.init(domain_id = ROS_DOMAIN_ID)
 
 www_path = "../resource/web"
 app = Flask(__name__, static_folder=www_path + '/static', template_folder=www_path)
@@ -22,14 +21,18 @@ def signal_handler(sig, frame):
 
 signal.signal(signal.SIGTERM, signal_handler)
 
-def get_video_topics(node: Node):
+def get_video_topics():
     
     topics = []
-    for topic in node.get_topic_names_and_types():
+    ros_web_node = Node("ros_web_node")
+    time.sleep(1.0)
+
+    for topic in ros_web_node.get_topic_names_and_types():
         if topic[1] == ['sensor_msgs/msg/Image']:
             # topics.append(topic[0].replace('/compressed',''))
             topics.append(topic[0])
 
+    ros_web_node.destroy_node()
     return topics        
 
 
@@ -38,7 +41,7 @@ def serve_index():
   ip_address = request.host.split(':')[0]
   return render_template('index.html', 
                         ros_host = ip_address,
-                        video_topics = get_video_topics(ros_web_node))
+                        video_topics = get_video_topics())
 #   return "Hello World1!"
 
 @app.route('/shutdown', methods=['POST'])
